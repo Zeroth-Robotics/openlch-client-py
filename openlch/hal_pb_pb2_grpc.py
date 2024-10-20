@@ -64,6 +64,36 @@ class ServoControlStub(object):
                 request_serializer=hal__pb__pb2.IdChange.SerializeToString,
                 response_deserializer=hal__pb__pb2.ChangeIdResponse.FromString,
                 _registered_method=True)
+        self.StartCalibration = channel.unary_unary(
+                '/hal_pb.ServoControl/StartCalibration',
+                request_serializer=hal__pb__pb2.ServoId.SerializeToString,
+                response_deserializer=hal__pb__pb2.CalibrationResponse.FromString,
+                _registered_method=True)
+        self.CancelCalibration = channel.unary_unary(
+                '/hal_pb.ServoControl/CancelCalibration',
+                request_serializer=hal__pb__pb2.ServoId.SerializeToString,
+                response_deserializer=hal__pb__pb2.CalibrationResponse.FromString,
+                _registered_method=True)
+        self.StartVideoStream = channel.unary_unary(
+                '/hal_pb.ServoControl/StartVideoStream',
+                request_serializer=hal__pb__pb2.Empty.SerializeToString,
+                response_deserializer=hal__pb__pb2.Empty.FromString,
+                _registered_method=True)
+        self.StopVideoStream = channel.unary_unary(
+                '/hal_pb.ServoControl/StopVideoStream',
+                request_serializer=hal__pb__pb2.Empty.SerializeToString,
+                response_deserializer=hal__pb__pb2.Empty.FromString,
+                _registered_method=True)
+        self.GetVideoStreamUrls = channel.unary_unary(
+                '/hal_pb.ServoControl/GetVideoStreamUrls',
+                request_serializer=hal__pb__pb2.Empty.SerializeToString,
+                response_deserializer=hal__pb__pb2.VideoStreamUrls.FromString,
+                _registered_method=True)
+        self.GetCalibrationStatus = channel.unary_unary(
+                '/hal_pb.ServoControl/GetCalibrationStatus',
+                request_serializer=hal__pb__pb2.Empty.SerializeToString,
+                response_deserializer=hal__pb__pb2.CalibrationStatus.FromString,
+                _registered_method=True)
 
 
 class ServoControlServicer(object):
@@ -105,6 +135,42 @@ class ServoControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def StartCalibration(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CancelCalibration(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StartVideoStream(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StopVideoStream(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetVideoStreamUrls(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetCalibrationStatus(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ServoControlServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -137,6 +203,36 @@ def add_ServoControlServicer_to_server(servicer, server):
                     servicer.ChangeId,
                     request_deserializer=hal__pb__pb2.IdChange.FromString,
                     response_serializer=hal__pb__pb2.ChangeIdResponse.SerializeToString,
+            ),
+            'StartCalibration': grpc.unary_unary_rpc_method_handler(
+                    servicer.StartCalibration,
+                    request_deserializer=hal__pb__pb2.ServoId.FromString,
+                    response_serializer=hal__pb__pb2.CalibrationResponse.SerializeToString,
+            ),
+            'CancelCalibration': grpc.unary_unary_rpc_method_handler(
+                    servicer.CancelCalibration,
+                    request_deserializer=hal__pb__pb2.ServoId.FromString,
+                    response_serializer=hal__pb__pb2.CalibrationResponse.SerializeToString,
+            ),
+            'StartVideoStream': grpc.unary_unary_rpc_method_handler(
+                    servicer.StartVideoStream,
+                    request_deserializer=hal__pb__pb2.Empty.FromString,
+                    response_serializer=hal__pb__pb2.Empty.SerializeToString,
+            ),
+            'StopVideoStream': grpc.unary_unary_rpc_method_handler(
+                    servicer.StopVideoStream,
+                    request_deserializer=hal__pb__pb2.Empty.FromString,
+                    response_serializer=hal__pb__pb2.Empty.SerializeToString,
+            ),
+            'GetVideoStreamUrls': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVideoStreamUrls,
+                    request_deserializer=hal__pb__pb2.Empty.FromString,
+                    response_serializer=hal__pb__pb2.VideoStreamUrls.SerializeToString,
+            ),
+            'GetCalibrationStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetCalibrationStatus,
+                    request_deserializer=hal__pb__pb2.Empty.FromString,
+                    response_serializer=hal__pb__pb2.CalibrationStatus.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -301,6 +397,168 @@ class ServoControl(object):
             '/hal_pb.ServoControl/ChangeId',
             hal__pb__pb2.IdChange.SerializeToString,
             hal__pb__pb2.ChangeIdResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def StartCalibration(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/StartCalibration',
+            hal__pb__pb2.ServoId.SerializeToString,
+            hal__pb__pb2.CalibrationResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CancelCalibration(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/CancelCalibration',
+            hal__pb__pb2.ServoId.SerializeToString,
+            hal__pb__pb2.CalibrationResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def StartVideoStream(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/StartVideoStream',
+            hal__pb__pb2.Empty.SerializeToString,
+            hal__pb__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def StopVideoStream(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/StopVideoStream',
+            hal__pb__pb2.Empty.SerializeToString,
+            hal__pb__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetVideoStreamUrls(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/GetVideoStreamUrls',
+            hal__pb__pb2.Empty.SerializeToString,
+            hal__pb__pb2.VideoStreamUrls.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetCalibrationStatus(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/GetCalibrationStatus',
+            hal__pb__pb2.Empty.SerializeToString,
+            hal__pb__pb2.CalibrationStatus.FromString,
             options,
             channel_credentials,
             insecure,

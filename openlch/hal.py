@@ -119,6 +119,62 @@ class HAL:
             else:
                 raise Exception(f"Error: {response.error.message} (Code: {response.error.code})")
 
+        def start_calibration(self, servo_id: int) -> bool:
+            """
+            Start calibration for a specific servo.
+
+            Args:
+                servo_id (int): The ID of the servo to calibrate.
+
+            Returns:
+                bool: True if calibration started successfully, False otherwise.
+
+            Raises:
+                Exception: If there's an error starting the calibration.
+            """
+            request = hal_pb_pb2.ServoId(id=servo_id)
+            response = self.__stub.StartCalibration(request)
+            if response.HasField('success'):
+                return response.success
+            else:
+                raise Exception(f"Error: {response.error.message} (Code: {response.error.code})")
+
+        def cancel_calibration(self, servo_id: int) -> bool:
+            """
+            Cancel ongoing calibration for a specific servo.
+
+            Args:
+                servo_id (int): The ID of the servo to cancel calibration for.
+
+            Returns:
+                bool: True if calibration was successfully cancelled, False otherwise.
+
+            Raises:
+                Exception: If there's an error cancelling the calibration.
+            """
+            request = hal_pb_pb2.ServoId(id=servo_id)
+            response = self.__stub.CancelCalibration(request)
+            if response.HasField('success'):
+                return response.success
+            else:
+                raise Exception(f"Error: {response.error.message} (Code: {response.error.code})")
+
+        def get_calibration_status(self) -> Dict[str, Union[bool, int]]:
+            """
+            Get the current calibration status.
+
+            Returns:
+                Dict[str, Union[bool, int]]: A dictionary containing calibration status information.
+
+            Raises:
+                Exception: If there's an error retrieving the calibration status.
+            """
+            response = self.__stub.GetCalibrationStatus(hal_pb_pb2.Empty())
+            return {
+                'is_calibrating': response.is_calibrating,
+                'calibrating_servo_id': response.calibrating_servo_id
+            }
+
     class System:
         """Class for system-related operations."""
 
@@ -135,3 +191,27 @@ class HAL:
             """
             request = hal_pb_pb2.WifiCredentials(ssid=ssid, password=password)
             self.__stub.SetWifiInfo(request)
+
+        def start_video_stream(self) -> None:
+            """Start the video stream."""
+            self.__stub.StartVideoStream(hal_pb_pb2.Empty())
+
+        def stop_video_stream(self) -> None:
+            """Stop the video stream."""
+            self.__stub.StopVideoStream(hal_pb_pb2.Empty())
+
+        def get_video_stream_urls(self) -> Dict[str, List[str]]:
+            """
+            Get the URLs for various video stream formats.
+
+            Returns:
+                Dict[str, List[str]]: A dictionary containing lists of URLs for different stream formats.
+            """
+            response = self.__stub.GetVideoStreamUrls(hal_pb_pb2.Empty())
+            return {
+                'webrtc': list(response.webrtc),
+                'hls': list(response.hls),
+                'hls_ll': list(response.hls_ll),
+                'mse': list(response.mse),
+                'rtsp': list(response.rtsp)
+            }

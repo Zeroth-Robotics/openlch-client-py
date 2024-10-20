@@ -18,6 +18,12 @@ def cli() -> None:
     - get-servo-info: Get information about a specific servo
     - scan-servos: Scan for connected servos
     - change-servo-id: Change the ID of a servo
+    - start-calibration: Start calibration for a specific servo
+    - cancel-calibration: Cancel ongoing calibration for a specific servo
+    - get-calibration-status: Get the current calibration status
+    - start-video-stream: Start the video stream
+    - stop-video-stream: Stop the video stream
+    - get-video-stream-urls: Get the URLs for various video stream formats
 
     Use 'openlch COMMAND --help' for more information on a specific command.
     """
@@ -127,6 +133,99 @@ def change_servo_id(old_id: int, new_id: int, ip: str) -> None:
             click.echo(f"Successfully changed servo ID from {old_id} to {new_id}")
         else:
             click.echo("Failed to change servo ID")
+    except Exception as e:
+        click.echo(f"An error occurred: {str(e)}")
+    finally:
+        hal.close()
+
+@cli.command()
+@click.argument("servo_id", type=int)
+@click.argument("ip", default=DEFAULT_IP)
+def start_calibration(servo_id: int, ip: str) -> None:
+    """Start calibration for a specific servo."""
+    hal = HAL(ip)
+    try:
+        success = hal.servo.start_calibration(servo_id)
+        if success:
+            click.echo(f"Calibration started for servo {servo_id}")
+        else:
+            click.echo(f"Failed to start calibration for servo {servo_id}")
+    except Exception as e:
+        click.echo(f"An error occurred: {str(e)}")
+    finally:
+        hal.close()
+
+@cli.command()
+@click.argument("servo_id", type=int)
+@click.argument("ip", default=DEFAULT_IP)
+def cancel_calibration(servo_id: int, ip: str) -> None:
+    """Cancel ongoing calibration for a specific servo."""
+    hal = HAL(ip)
+    try:
+        success = hal.servo.cancel_calibration(servo_id)
+        if success:
+            click.echo(f"Calibration cancelled for servo {servo_id}")
+        else:
+            click.echo(f"Failed to cancel calibration for servo {servo_id}")
+    except Exception as e:
+        click.echo(f"An error occurred: {str(e)}")
+    finally:
+        hal.close()
+
+@cli.command()
+@click.argument("ip", default=DEFAULT_IP)
+def get_calibration_status(ip: str) -> None:
+    """Get the current calibration status."""
+    hal = HAL(ip)
+    try:
+        status = hal.servo.get_calibration_status()
+        if status['is_calibrating']:
+            click.echo(f"Calibration in progress for servo {status['calibrating_servo_id']}")
+        else:
+            click.echo("No calibration in progress")
+    except Exception as e:
+        click.echo(f"An error occurred: {str(e)}")
+    finally:
+        hal.close()
+
+@cli.command()
+@click.argument("ip", default=DEFAULT_IP)
+def start_video_stream(ip: str) -> None:
+    """Start the video stream."""
+    hal = HAL(ip)
+    try:
+        hal.system.start_video_stream()
+        click.echo("Video stream started")
+    except Exception as e:
+        click.echo(f"An error occurred: {str(e)}")
+    finally:
+        hal.close()
+
+@cli.command()
+@click.argument("ip", default=DEFAULT_IP)
+def stop_video_stream(ip: str) -> None:
+    """Stop the video stream."""
+    hal = HAL(ip)
+    try:
+        hal.system.stop_video_stream()
+        click.echo("Video stream stopped")
+    except Exception as e:
+        click.echo(f"An error occurred: {str(e)}")
+    finally:
+        hal.close()
+
+@cli.command()
+@click.argument("ip", default=DEFAULT_IP)
+def get_video_stream_urls(ip: str) -> None:
+    """Get the URLs for various video stream formats."""
+    hal = HAL(ip)
+    try:
+        urls = hal.system.get_video_stream_urls()
+        click.echo("Video stream URLs:")
+        for format, url_list in urls.items():
+            click.echo(f"{format.upper()}:")
+            for url in url_list:
+                click.echo(f"  - {url}")
     except Exception as e:
         click.echo(f"An error occurred: {str(e)}")
     finally:
