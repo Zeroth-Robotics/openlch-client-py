@@ -66,7 +66,15 @@ class HAL:
                 servo_id (int): The ID of the servo to query.
 
             Returns:
-                Dict[str, Union[int, float]]: A dictionary containing servo information.
+                Dict[str, Union[int, float]]: A dictionary containing servo information:
+                    - id: The ID of the servo
+                    - temperature: Current temperature of the servo (in degrees Celsius)
+                    - current: Current draw of the servo (in amperes)
+                    - voltage: Voltage supplied to the servo (in volts)
+                    - speed: Current speed of the servo (in radians per second)
+                    - current_position: Current position of the servo (in radians)
+                    - min_position: Minimum allowed position of the servo (in radians)
+                    - max_position: Maximum allowed position of the servo (in radians)
 
             Raises:
                 Exception: If there's an error retrieving the servo information.
@@ -205,7 +213,12 @@ class HAL:
             Get the URLs for various video stream formats.
 
             Returns:
-                Dict[str, List[str]]: A dictionary containing lists of URLs for different stream formats.
+                Dict[str, List[str]]: A dictionary containing lists of URLs for different stream formats:
+                    - webrtc: List of WebRTC stream URLs
+                    - hls: List of HTTP Live Streaming (HLS) URLs
+                    - hls_ll: List of Low-Latency HLS URLs
+                    - mse: List of Media Source Extension (MSE) URLs
+                    - rtsp: List of Real-Time Streaming Protocol (RTSP) URLs
             """
             response = self.__stub.GetVideoStreamUrls(hal_pb_pb2.Empty())
             return {
