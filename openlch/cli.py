@@ -3,6 +3,7 @@
 import subprocess
 import click
 from .hal import HAL
+from typing import List, Tuple
 
 DEFAULT_IP = "192.168.42.1"
 
@@ -47,13 +48,13 @@ def ping(ip: str) -> None:
 @cli.command()
 @click.argument("ip", default=DEFAULT_IP)
 def get_positions(ip: str) -> None:
-    """Get current positions of all servos."""
+    """Get current positions and speeds of all servos."""
     hal = HAL(ip)
     try:
         positions = hal.servo.get_positions()
-        click.echo("Current positions:")
-        for id, position in positions:
-            click.echo(f"Servo {id}: {position}")
+        click.echo("Current positions and speeds:")
+        for id, position, speed in positions:
+            click.echo(f"Servo {id}: Position = {position:.2f}, Speed = {speed:.2f}")
     except Exception as e:
         click.echo(f"An error occurred: {str(e)}")
     finally:
@@ -226,6 +227,42 @@ def get_video_stream_urls(ip: str) -> None:
             click.echo(f"{format.upper()}:")
             for url in url_list:
                 click.echo(f"  - {url}")
+    except Exception as e:
+        click.echo(f"An error occurred: {str(e)}")
+    finally:
+        hal.close()
+
+@cli.command()
+@click.option("--settings", "-s", type=(int, float), multiple=True, required=True,
+              help="Servo ID and torque value pairs (e.g., -s 1 0.5 -s 2 0.7)")
+@click.argument("ip", default=DEFAULT_IP)
+def set_torque(settings: List[Tuple[int, float]], ip: str) -> None:
+    """Set torque for multiple servos."""
+    hal = HAL(ip)
+    try:
+        hal.servo.set_torque(settings)
+        click.echo("Torque settings applied successfully:")
+        for servo_id, torque in settings:
+            click.echo(f"Servo {servo_id}: Torque = {torque:.2f}")
+    except Exception as e:
+        click.echo(f"An error occurred: {str(e)}")
+    finally:
+        hal.close()
+
+@cli.command()
+@click.option("--settings", "-s", type=(int, click.Choice(['true', 'false'])), multiple=True, required=True,
+              help="Servo ID and enable status pairs (e.g., -s 1 true -s 2 false)")
+@click.argument("ip", default=DEFAULT_IP)
+def set_torque_enable(settings: List[Tuple[int, str]], ip: str) -> None:
+    """Enable or disable torque for multiple servos."""
+    hal = HAL(ip)
+    try:
+        # Convert 'true'/'false' strings to boolean values
+        bool_settings = [(id, status.lower() == 'true') for id, status in settings]
+        hal.servo.set_torque_enable(bool_settings)
+        click.echo("Torque enable settings applied successfully:")
+        for servo_id, status in bool_settings:
+            click.echo(f"Servo {servo_id}: Torque {'enabled' if status else 'disabled'}")
     except Exception as e:
         click.echo(f"An error occurred: {str(e)}")
     finally:
