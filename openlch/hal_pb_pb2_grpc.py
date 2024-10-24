@@ -94,6 +94,16 @@ class ServoControlStub(object):
                 request_serializer=hal__pb__pb2.Empty.SerializeToString,
                 response_deserializer=hal__pb__pb2.CalibrationStatus.FromString,
                 _registered_method=True)
+        self.SetTorque = channel.unary_unary(
+                '/hal_pb.ServoControl/SetTorque',
+                request_serializer=hal__pb__pb2.TorqueSettings.SerializeToString,
+                response_deserializer=hal__pb__pb2.Empty.FromString,
+                _registered_method=True)
+        self.SetTorqueEnable = channel.unary_unary(
+                '/hal_pb.ServoControl/SetTorqueEnable',
+                request_serializer=hal__pb__pb2.TorqueEnableSettings.SerializeToString,
+                response_deserializer=hal__pb__pb2.Empty.FromString,
+                _registered_method=True)
 
 
 class ServoControlServicer(object):
@@ -171,6 +181,18 @@ class ServoControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetTorque(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetTorqueEnable(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ServoControlServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -233,6 +255,16 @@ def add_ServoControlServicer_to_server(servicer, server):
                     servicer.GetCalibrationStatus,
                     request_deserializer=hal__pb__pb2.Empty.FromString,
                     response_serializer=hal__pb__pb2.CalibrationStatus.SerializeToString,
+            ),
+            'SetTorque': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetTorque,
+                    request_deserializer=hal__pb__pb2.TorqueSettings.FromString,
+                    response_serializer=hal__pb__pb2.Empty.SerializeToString,
+            ),
+            'SetTorqueEnable': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetTorqueEnable,
+                    request_deserializer=hal__pb__pb2.TorqueEnableSettings.FromString,
+                    response_serializer=hal__pb__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -559,6 +591,60 @@ class ServoControl(object):
             '/hal_pb.ServoControl/GetCalibrationStatus',
             hal__pb__pb2.Empty.SerializeToString,
             hal__pb__pb2.CalibrationStatus.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetTorque(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/SetTorque',
+            hal__pb__pb2.TorqueSettings.SerializeToString,
+            hal__pb__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetTorqueEnable(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/SetTorqueEnable',
+            hal__pb__pb2.TorqueEnableSettings.SerializeToString,
+            hal__pb__pb2.Empty.FromString,
             options,
             channel_credentials,
             insecure,

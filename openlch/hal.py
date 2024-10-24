@@ -34,15 +34,15 @@ class HAL:
         def __init__(self, stub):
             self.__stub = stub
 
-        def get_positions(self) -> List[Tuple[int, float]]:
+        def get_positions(self) -> List[Tuple[int, float, float]]:
             """
-            Get current positions of all servos.
+            Get current positions and speeds of all servos.
 
             Returns:
-                List[Tuple[int, float]]: A list of tuples containing servo IDs and their positions.
+                List[Tuple[int, float, float]]: A list of tuples containing servo IDs, their positions, and speeds.
             """
             response = self.__stub.GetPositions(hal_pb_pb2.Empty())
-            return [(pos.id, pos.position) for pos in response.positions]
+            return [(pos.id, pos.position, pos.speed) for pos in response.positions]
 
         def set_positions(self, positions: List[Tuple[int, float]]) -> None:
             """
@@ -52,7 +52,7 @@ class HAL:
                 positions (List[Tuple[int, float]]): A list of tuples, each containing a servo ID and its target position.
             """
             joint_positions = [
-                hal_pb_pb2.JointPosition(id=id, position=position)
+                hal_pb_pb2.JointPosition(id=id, position=position, speed=0)
                 for id, position in positions
             ]
             request = hal_pb_pb2.JointPositions(positions=joint_positions)
@@ -190,6 +190,34 @@ class HAL:
                 'is_calibrating': response.is_calibrating,
                 'calibrating_servo_id': response.calibrating_servo_id
             }
+
+        def set_torque(self, torque_settings: List[Tuple[int, float]]) -> None:
+            """
+            Set torque for multiple servos.
+
+            Args:
+                torque_settings (List[Tuple[int, float]]): A list of tuples, each containing a servo ID and its target torque.
+            """
+            settings = [
+                hal_pb_pb2.TorqueSetting(id=id, torque=torque)
+                for id, torque in torque_settings
+            ]
+            request = hal_pb_pb2.TorqueSettings(settings=settings)
+            self.__stub.SetTorque(request)
+
+        def set_torque_enable(self, enable_settings: List[Tuple[int, bool]]) -> None:
+            """
+            Enable or disable torque for multiple servos.
+
+            Args:
+                enable_settings (List[Tuple[int, bool]]): A list of tuples, each containing a servo ID and a boolean indicating whether to enable torque.
+            """
+            settings = [
+                hal_pb_pb2.TorqueEnableSetting(id=id, enable=enable)
+                for id, enable in enable_settings
+            ]
+            request = hal_pb_pb2.TorqueEnableSettings(settings=settings)
+            self.__stub.SetTorqueEnable(request)
 
     class System:
         """Class for system-related operations."""
