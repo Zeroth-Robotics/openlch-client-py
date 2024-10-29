@@ -104,6 +104,11 @@ class ServoControlStub(object):
                 request_serializer=hal__pb__pb2.TorqueEnableSettings.SerializeToString,
                 response_deserializer=hal__pb__pb2.Empty.FromString,
                 _registered_method=True)
+        self.GetImuData = channel.unary_unary(
+                '/hal_pb.ServoControl/GetImuData',
+                request_serializer=hal__pb__pb2.Empty.SerializeToString,
+                response_deserializer=hal__pb__pb2.ImuData.FromString,
+                _registered_method=True)
 
 
 class ServoControlServicer(object):
@@ -193,6 +198,12 @@ class ServoControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetImuData(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ServoControlServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -265,6 +276,11 @@ def add_ServoControlServicer_to_server(servicer, server):
                     servicer.SetTorqueEnable,
                     request_deserializer=hal__pb__pb2.TorqueEnableSettings.FromString,
                     response_serializer=hal__pb__pb2.Empty.SerializeToString,
+            ),
+            'GetImuData': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetImuData,
+                    request_deserializer=hal__pb__pb2.Empty.FromString,
+                    response_serializer=hal__pb__pb2.ImuData.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -645,6 +661,33 @@ class ServoControl(object):
             '/hal_pb.ServoControl/SetTorqueEnable',
             hal__pb__pb2.TorqueEnableSettings.SerializeToString,
             hal__pb__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetImuData(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/GetImuData',
+            hal__pb__pb2.Empty.SerializeToString,
+            hal__pb__pb2.ImuData.FromString,
             options,
             channel_credentials,
             insecure,

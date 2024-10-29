@@ -25,6 +25,7 @@ def cli() -> None:
     - start-video-stream: Start the video stream
     - stop-video-stream: Stop the video stream
     - get-video-stream-urls: Get the URLs for various video stream formats
+    - get-imu-data: Get current IMU sensor data (gyroscope and accelerometer readings)
 
     Use 'openlch COMMAND --help' for more information on a specific command.
     """
@@ -263,6 +264,27 @@ def set_torque_enable(settings: List[Tuple[int, str]], ip: str) -> None:
         click.echo("Torque enable settings applied successfully:")
         for servo_id, status in bool_settings:
             click.echo(f"Servo {servo_id}: Torque {'enabled' if status else 'disabled'}")
+    except Exception as e:
+        click.echo(f"An error occurred: {str(e)}")
+    finally:
+        hal.close()
+
+@cli.command()
+@click.argument("ip", default=DEFAULT_IP)
+def get_imu_data(ip: str) -> None:
+    """Get current IMU sensor data (gyroscope and accelerometer readings)."""
+    hal = HAL(ip)
+    try:
+        imu_data = hal.imu.get_data()
+        click.echo("IMU Sensor Data:")
+        click.echo("\nGyroscope (degrees/second):")
+        click.echo(f"  X: {imu_data['gyro']['x']:.2f}")
+        click.echo(f"  Y: {imu_data['gyro']['y']:.2f}")
+        click.echo(f"  Z: {imu_data['gyro']['z']:.2f}")
+        click.echo("\nAccelerometer (g):")
+        click.echo(f"  X: {imu_data['accel']['x']:.2f}")
+        click.echo(f"  Y: {imu_data['accel']['y']:.2f}")
+        click.echo(f"  Z: {imu_data['accel']['z']:.2f}")
     except Exception as e:
         click.echo(f"An error occurred: {str(e)}")
     finally:

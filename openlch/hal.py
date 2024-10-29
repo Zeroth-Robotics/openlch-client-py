@@ -23,6 +23,7 @@ class HAL:
         self.__stub = hal_pb_pb2_grpc.ServoControlStub(self.__channel)
         self.servo = self.Servo(self.__stub)
         self.system = self.System(self.__stub)
+        self.imu = self.IMU(self.__stub)
 
     def close(self) -> None:
         """Close the gRPC channel."""
@@ -270,4 +271,27 @@ class HAL:
                 'hls_ll': list(response.hls_ll),
                 'mse': list(response.mse),
                 'rtsp': list(response.rtsp)
+            }
+
+    class IMU:
+        """Class for IMU-related operations."""
+
+        def __init__(self, stub):
+            self.__stub = stub
+
+        def get_data(self) -> Dict[str, Dict[str, float]]:
+            """
+            Get current IMU sensor data including gyroscope and accelerometer readings.
+
+            Returns:
+                Dict[str, Dict[str, float]]: A dictionary containing gyroscope and accelerometer data:
+                    {
+                        'gyro': {'x': float, 'y': float, 'z': float},  # Angular velocity in degrees/second
+                        'accel': {'x': float, 'y': float, 'z': float}  # Linear acceleration in g
+                    }
+            """
+            response = self.__stub.GetImuData(hal_pb_pb2.Empty())
+            return {
+                'gyro': {'x': response.gyro.x, 'y': response.gyro.y, 'z': response.gyro.z},
+                'accel': {'x': response.accel.x, 'y': response.accel.y, 'z': response.accel.z}
             }
