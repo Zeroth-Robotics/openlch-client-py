@@ -287,6 +287,7 @@ class HAL:
 
             Returns:
                 Dict[str, Dict[str, float]]: A dictionary containing gyroscope and accelerometer data:
+
                     {
                         'gyro': {'x': float, 'y': float, 'z': float},  # Angular velocity in degrees/second
                         'accel': {'x': float, 'y': float, 'z': float}  # Linear acceleration in g
@@ -315,8 +316,8 @@ class HAL:
 
             Returns:
                 Dict[str, Union[str, bool]]: A dictionary containing:
-                    - 'audio_id': Identifier for the uploaded audio
-                    - 'success': Boolean indicating upload success
+                - 'audio_id': Identifier for the uploaded audio
+                - 'success': Boolean indicating upload success
 
             Raises:
                 Exception: If there's an error during upload
@@ -346,9 +347,10 @@ class HAL:
 
             Returns:
                 Tuple[bytes, str, int]: Tuple containing:
-                    - bytes: The complete audio data
-                    - str: Audio format
-                    - int: Initial timestamp in milliseconds
+
+                - bytes: The complete audio data
+                - str: Audio format
+                - int: Initial timestamp in milliseconds
             """
             audio_data = bytearray()
             format_type = None
