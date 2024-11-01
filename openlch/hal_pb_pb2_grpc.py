@@ -109,6 +109,31 @@ class ServoControlStub(object):
                 request_serializer=hal__pb__pb2.Empty.SerializeToString,
                 response_deserializer=hal__pb__pb2.ImuData.FromString,
                 _registered_method=True)
+        self.UploadAudio = channel.stream_unary(
+                '/hal_pb.ServoControl/UploadAudio',
+                request_serializer=hal__pb__pb2.AudioChunk.SerializeToString,
+                response_deserializer=hal__pb__pb2.UploadResponse.FromString,
+                _registered_method=True)
+        self.PlayAudio = channel.unary_unary(
+                '/hal_pb.ServoControl/PlayAudio',
+                request_serializer=hal__pb__pb2.PlayRequest.SerializeToString,
+                response_deserializer=hal__pb__pb2.Empty.FromString,
+                _registered_method=True)
+        self.StartRecording = channel.unary_unary(
+                '/hal_pb.ServoControl/StartRecording',
+                request_serializer=hal__pb__pb2.RecordingConfig.SerializeToString,
+                response_deserializer=hal__pb__pb2.Empty.FromString,
+                _registered_method=True)
+        self.StopRecording = channel.unary_unary(
+                '/hal_pb.ServoControl/StopRecording',
+                request_serializer=hal__pb__pb2.Empty.SerializeToString,
+                response_deserializer=hal__pb__pb2.Empty.FromString,
+                _registered_method=True)
+        self.GetRecordedAudio = channel.unary_stream(
+                '/hal_pb.ServoControl/GetRecordedAudio',
+                request_serializer=hal__pb__pb2.Empty.SerializeToString,
+                response_deserializer=hal__pb__pb2.AudioChunk.FromString,
+                _registered_method=True)
 
 
 class ServoControlServicer(object):
@@ -204,6 +229,36 @@ class ServoControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def UploadAudio(self, request_iterator, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PlayAudio(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StartRecording(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StopRecording(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetRecordedAudio(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ServoControlServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -281,6 +336,31 @@ def add_ServoControlServicer_to_server(servicer, server):
                     servicer.GetImuData,
                     request_deserializer=hal__pb__pb2.Empty.FromString,
                     response_serializer=hal__pb__pb2.ImuData.SerializeToString,
+            ),
+            'UploadAudio': grpc.stream_unary_rpc_method_handler(
+                    servicer.UploadAudio,
+                    request_deserializer=hal__pb__pb2.AudioChunk.FromString,
+                    response_serializer=hal__pb__pb2.UploadResponse.SerializeToString,
+            ),
+            'PlayAudio': grpc.unary_unary_rpc_method_handler(
+                    servicer.PlayAudio,
+                    request_deserializer=hal__pb__pb2.PlayRequest.FromString,
+                    response_serializer=hal__pb__pb2.Empty.SerializeToString,
+            ),
+            'StartRecording': grpc.unary_unary_rpc_method_handler(
+                    servicer.StartRecording,
+                    request_deserializer=hal__pb__pb2.RecordingConfig.FromString,
+                    response_serializer=hal__pb__pb2.Empty.SerializeToString,
+            ),
+            'StopRecording': grpc.unary_unary_rpc_method_handler(
+                    servicer.StopRecording,
+                    request_deserializer=hal__pb__pb2.Empty.FromString,
+                    response_serializer=hal__pb__pb2.Empty.SerializeToString,
+            ),
+            'GetRecordedAudio': grpc.unary_stream_rpc_method_handler(
+                    servicer.GetRecordedAudio,
+                    request_deserializer=hal__pb__pb2.Empty.FromString,
+                    response_serializer=hal__pb__pb2.AudioChunk.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -688,6 +768,141 @@ class ServoControl(object):
             '/hal_pb.ServoControl/GetImuData',
             hal__pb__pb2.Empty.SerializeToString,
             hal__pb__pb2.ImuData.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UploadAudio(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_unary(
+            request_iterator,
+            target,
+            '/hal_pb.ServoControl/UploadAudio',
+            hal__pb__pb2.AudioChunk.SerializeToString,
+            hal__pb__pb2.UploadResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PlayAudio(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/PlayAudio',
+            hal__pb__pb2.PlayRequest.SerializeToString,
+            hal__pb__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def StartRecording(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/StartRecording',
+            hal__pb__pb2.RecordingConfig.SerializeToString,
+            hal__pb__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def StopRecording(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/StopRecording',
+            hal__pb__pb2.Empty.SerializeToString,
+            hal__pb__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetRecordedAudio(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(
+            request,
+            target,
+            '/hal_pb.ServoControl/GetRecordedAudio',
+            hal__pb__pb2.Empty.SerializeToString,
+            hal__pb__pb2.AudioChunk.FromString,
             options,
             channel_credentials,
             insecure,

@@ -1,7 +1,8 @@
 import grpc
-from typing import List, Tuple, Dict, Union
+from typing import List, Tuple, Dict, Union, Iterator
 from . import hal_pb_pb2
 from . import hal_pb_pb2_grpc
+import time
 
 __all__ = ['HAL']
 
@@ -24,6 +25,7 @@ class HAL:
         self.servo = self.Servo(self.__stub)
         self.system = self.System(self.__stub)
         self.imu = self.IMU(self.__stub)
+        self.audio = self.Audio(self.__stub)
 
     def close(self) -> None:
         """Close the gRPC channel."""
@@ -295,3 +297,105 @@ class HAL:
                 'gyro': {'x': response.gyro.x, 'y': response.gyro.y, 'z': response.gyro.z},
                 'accel': {'x': response.accel.x, 'y': response.accel.y, 'z': response.accel.z}
             }
+
+    class Audio:
+        """Class for audio-related operations."""
+
+        def __init__(self, stub):
+            self.__stub = stub
+            self.CHUNK_SIZE = 32768  # 32KB chunks
+
+        def upload_file(self, audio_data: bytes, format: str = "wav") -> Dict[str, Union[str, bool]]:
+            """
+            Upload audio data.
+
+            Args:
+                audio_data (bytes): The audio data
+                format (str): Audio format (e.g., 'wav'). Defaults to 'wav'.
+
+            Returns:
+                Dict[str, Union[str, bool]]: A dictionary containing:
+                    - 'audio_id': Identifier for the uploaded audio
+                    - 'success': Boolean indicating upload success
+
+            Raises:
+                Exception: If there's an error during upload
+            """
+            def chunk_generator():
+                timestamp = int(time.time() * 1000)  # Current time in milliseconds
+                for i in range(0, len(audio_data), self.CHUNK_SIZE):
+                    chunk = hal_pb_pb2.AudioChunk(
+                        data=audio_data[i:i + self.CHUNK_SIZE],
+                        format=format,
+                        timestamp=timestamp + i  # Incrementing timestamp for ordering
+                    )
+                    yield chunk
+
+            response = self.__stub.UploadAudio(chunk_generator())
+            if response.HasField('success'):
+                return {
+                    'audio_id': response.audio_id,
+                    'success': response.success
+                }
+            else:
+                raise Exception(f"Error: {response.error.message} (Code: {response.error.code})")
+
+        def get_recording(self) -> Tuple[bytes, str, int]:
+            """
+            Get recorded audio data as a bytes object.
+
+            Returns:
+                Tuple[bytes, str, int]: Tuple containing:
+                    - bytes: The complete audio data
+                    - str: Audio format
+                    - int: Initial timestamp in milliseconds
+            """
+            audio_data = bytearray()
+            format_type = None
+            timestamp = None
+            
+            for chunk in self.__stub.GetRecordedAudio(hal_pb_pb2.Empty()):
+                audio_data.extend(chunk.data)
+                if format_type is None:
+                    format_type = chunk.format
+                if timestamp is None:
+                    timestamp = chunk.timestamp
+            
+            return bytes(audio_data), format_type, timestamp
+
+        def play(self, audio_id: str, volume: float = 1.0) -> None:
+            """
+            Play uploaded audio.
+
+            Args:
+                audio_id (str): ID of the audio to play
+                volume (float): Playback volume from 0.0 to 1.0. Defaults to 1.0.
+
+            Raises:
+                ValueError: If volume is not between 0.0 and 1.0
+            """
+            if not 0.0 <= volume <= 1.0:
+                raise ValueError("Volume must be between 0.0 and 1.0")
+            
+            request = hal_pb_pb2.PlayRequest(audio_id=audio_id, volume=volume)
+            self.__stub.PlayAudio(request)
+
+        def start_recording(self, sample_rate: int = 44100, format: str = "wav", channels: int = 1) -> None:
+            """
+            Start audio recording.
+
+            Args:
+                sample_rate (int): Sample rate in Hz. Defaults to 44100.
+                format (str): Audio format (e.g., 'wav'). Defaults to 'wav'.
+                channels (int): Number of audio channels (1 for mono, 2 for stereo). Defaults to 1.
+            """
+            config = hal_pb_pb2.RecordingConfig(
+                sample_rate=sample_rate,
+                format=format,
+                channels=channels
+            )
+            self.__stub.StartRecording(config)
+
+        def stop_recording(self) -> None:
+            """Stop audio recording."""
+            self.__stub.StopRecording(hal_pb_pb2.Empty())
