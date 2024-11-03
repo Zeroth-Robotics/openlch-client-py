@@ -143,14 +143,26 @@ def change_servo_id(old_id: int, new_id: int, ip: str) -> None:
 
 @cli.command()
 @click.argument("servo_id", type=int)
+@click.option("--speed", "-s", type=int, default=300, 
+              help="Calibration speed in degrees per second. Default: 300")
+@click.option("--current", "-c", type=float, default=600.0,
+              help="Current threshold in mA to detect end stops. Default: 600.0")
 @click.argument("ip", default=DEFAULT_IP)
-def start_calibration(servo_id: int, ip: str) -> None:
-    """Start calibration for a specific servo."""
+def start_calibration(servo_id: int, speed: int, current: float, ip: str) -> None:
+    """Start calibration for a specific servo.
+    
+    The calibration process will move the servo until it detects end stops based on current draw.
+    Use --speed to adjust movement speed and --current to adjust sensitivity."""
     hal = HAL(ip)
     try:
-        success = hal.servo.start_calibration(servo_id)
+        success = hal.servo.start_calibration(
+            servo_id,
+            calibration_speed=speed,
+            current_threshold=current
+        )
         if success:
             click.echo(f"Calibration started for servo {servo_id}")
+            click.echo(f"Speed: {speed} deg/s, Current threshold: {current} mA")
         else:
             click.echo(f"Failed to start calibration for servo {servo_id}")
     except Exception as e:

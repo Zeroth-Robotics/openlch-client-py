@@ -138,12 +138,14 @@ class HAL:
             else:
                 raise Exception(f"Error: {response.error.message} (Code: {response.error.code})")
 
-        def start_calibration(self, servo_id: int) -> bool:
+        def start_calibration(self, servo_id: int, calibration_speed: int = 300, current_threshold: float = 600.0) -> bool:
             """
             Start calibration for a specific servo.
 
             Args:
                 servo_id (int): The ID of the servo to calibrate.
+                calibration_speed (int, optional): Speed of calibration movement in degrees per second. Defaults to 300.
+                current_threshold (float, optional): Current threshold in mA to detect end stops. Defaults to 600.0.
 
             Returns:
                 bool: True if calibration started successfully, False otherwise.
@@ -151,7 +153,11 @@ class HAL:
             Raises:
                 Exception: If there's an error starting the calibration.
             """
-            request = hal_pb_pb2.ServoId(id=servo_id)
+            request = hal_pb_pb2.CalibrationRequest(
+                servo_id=servo_id,
+                calibration_speed=calibration_speed,
+                current_threshold=current_threshold
+            )
             response = self.__stub.StartCalibration(request)
             if response.HasField('success'):
                 return response.success
