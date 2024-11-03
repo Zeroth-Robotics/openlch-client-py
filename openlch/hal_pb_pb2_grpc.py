@@ -44,6 +44,21 @@ class ServoControlStub(object):
                 request_serializer=hal__pb__pb2.JointPositions.SerializeToString,
                 response_deserializer=hal__pb__pb2.Empty.FromString,
                 _registered_method=True)
+        self.EnableMovement = channel.unary_unary(
+                '/hal_pb.ServoControl/EnableMovement',
+                request_serializer=hal__pb__pb2.Empty.SerializeToString,
+                response_deserializer=hal__pb__pb2.Empty.FromString,
+                _registered_method=True)
+        self.DisableMovement = channel.unary_unary(
+                '/hal_pb.ServoControl/DisableMovement',
+                request_serializer=hal__pb__pb2.Empty.SerializeToString,
+                response_deserializer=hal__pb__pb2.Empty.FromString,
+                _registered_method=True)
+        self.SetPosition = channel.unary_unary(
+                '/hal_pb.ServoControl/SetPosition',
+                request_serializer=hal__pb__pb2.JointPosition.SerializeToString,
+                response_deserializer=hal__pb__pb2.Empty.FromString,
+                _registered_method=True)
         self.SetWifiInfo = channel.unary_unary(
                 '/hal_pb.ServoControl/SetWifiInfo',
                 request_serializer=hal__pb__pb2.WifiCredentials.SerializeToString,
@@ -66,7 +81,7 @@ class ServoControlStub(object):
                 _registered_method=True)
         self.StartCalibration = channel.unary_unary(
                 '/hal_pb.ServoControl/StartCalibration',
-                request_serializer=hal__pb__pb2.ServoId.SerializeToString,
+                request_serializer=hal__pb__pb2.CalibrationRequest.SerializeToString,
                 response_deserializer=hal__pb__pb2.CalibrationResponse.FromString,
                 _registered_method=True)
         self.CancelCalibration = channel.unary_unary(
@@ -146,6 +161,24 @@ class ServoControlServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def SetPositions(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def EnableMovement(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DisableMovement(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetPosition(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -272,6 +305,21 @@ def add_ServoControlServicer_to_server(servicer, server):
                     request_deserializer=hal__pb__pb2.JointPositions.FromString,
                     response_serializer=hal__pb__pb2.Empty.SerializeToString,
             ),
+            'EnableMovement': grpc.unary_unary_rpc_method_handler(
+                    servicer.EnableMovement,
+                    request_deserializer=hal__pb__pb2.Empty.FromString,
+                    response_serializer=hal__pb__pb2.Empty.SerializeToString,
+            ),
+            'DisableMovement': grpc.unary_unary_rpc_method_handler(
+                    servicer.DisableMovement,
+                    request_deserializer=hal__pb__pb2.Empty.FromString,
+                    response_serializer=hal__pb__pb2.Empty.SerializeToString,
+            ),
+            'SetPosition': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetPosition,
+                    request_deserializer=hal__pb__pb2.JointPosition.FromString,
+                    response_serializer=hal__pb__pb2.Empty.SerializeToString,
+            ),
             'SetWifiInfo': grpc.unary_unary_rpc_method_handler(
                     servicer.SetWifiInfo,
                     request_deserializer=hal__pb__pb2.WifiCredentials.FromString,
@@ -294,7 +342,7 @@ def add_ServoControlServicer_to_server(servicer, server):
             ),
             'StartCalibration': grpc.unary_unary_rpc_method_handler(
                     servicer.StartCalibration,
-                    request_deserializer=hal__pb__pb2.ServoId.FromString,
+                    request_deserializer=hal__pb__pb2.CalibrationRequest.FromString,
                     response_serializer=hal__pb__pb2.CalibrationResponse.SerializeToString,
             ),
             'CancelCalibration': grpc.unary_unary_rpc_method_handler(
@@ -416,6 +464,87 @@ class ServoControl(object):
             target,
             '/hal_pb.ServoControl/SetPositions',
             hal__pb__pb2.JointPositions.SerializeToString,
+            hal__pb__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def EnableMovement(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/EnableMovement',
+            hal__pb__pb2.Empty.SerializeToString,
+            hal__pb__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DisableMovement(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/DisableMovement',
+            hal__pb__pb2.Empty.SerializeToString,
+            hal__pb__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetPosition(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/hal_pb.ServoControl/SetPosition',
+            hal__pb__pb2.JointPosition.SerializeToString,
             hal__pb__pb2.Empty.FromString,
             options,
             channel_credentials,
@@ -550,7 +679,7 @@ class ServoControl(object):
             request,
             target,
             '/hal_pb.ServoControl/StartCalibration',
-            hal__pb__pb2.ServoId.SerializeToString,
+            hal__pb__pb2.CalibrationRequest.SerializeToString,
             hal__pb__pb2.CalibrationResponse.FromString,
             options,
             channel_credentials,

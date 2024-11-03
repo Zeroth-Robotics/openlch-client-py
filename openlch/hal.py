@@ -222,6 +222,26 @@ class HAL:
             request = hal_pb_pb2.TorqueEnableSettings(settings=settings)
             self.__stub.SetTorqueEnable(request)
 
+        def enable_movement(self) -> None:
+            """Enable continuous movement writes for all servos."""
+            self.__stub.EnableMovement(hal_pb_pb2.Empty())
+
+        def disable_movement(self) -> None:
+            """Disable continuous movement writes for all servos."""
+            self.__stub.DisableMovement(hal_pb_pb2.Empty())
+
+        def set_position(self, servo_id: int, position: float, speed: float = 0) -> None:
+            """
+            Set position for a single servo.
+
+            Args:
+                servo_id (int): The ID of the servo to control
+                position (float): Target position in degrees
+                speed (float, optional): Movement speed in degrees per second. Defaults to 0 (maximum speed).
+            """
+            request = hal_pb_pb2.JointPosition(id=servo_id, position=position, speed=speed)
+            self.__stub.SetPosition(request)
+
     class System:
         """Class for system-related operations."""
 

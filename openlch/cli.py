@@ -64,13 +64,14 @@ def get_positions(ip: str) -> None:
 @cli.command()
 @click.argument("id", type=int)
 @click.argument("position", type=float)
+@click.option("--speed", "-s", type=float, default=0, help="Movement speed in degrees per second (0 = max speed)")
 @click.argument("ip", default=DEFAULT_IP)
-def set_position(id: int, position: float, ip: str) -> None:
+def set_position(id: int, position: float, speed: float, ip: str) -> None:
     """Set position for a specific servo."""
     hal = HAL(ip)
     try:
-        hal.servo.set_positions([(id, position)])
-        click.echo(f"Position set for servo {id} to {position}")
+        hal.servo.set_position(id, position, speed)
+        click.echo(f"Position set for servo {id} to {position}° at speed {speed if speed > 0 else 'max'} deg/s")
     except Exception as e:
         click.echo(f"An error occurred: {str(e)}")
     finally:
@@ -281,10 +282,36 @@ def get_imu_data(ip: str) -> None:
         click.echo(f"  X: {imu_data['gyro']['x']:.2f}")
         click.echo(f"  Y: {imu_data['gyro']['y']:.2f}")
         click.echo(f"  Z: {imu_data['gyro']['z']:.2f}")
-        click.echo("\nAccelerometer (g):")
+        click.echo("\nAccelerometer (m/s^2):")
         click.echo(f"  X: {imu_data['accel']['x']:.2f}")
         click.echo(f"  Y: {imu_data['accel']['y']:.2f}")
         click.echo(f"  Z: {imu_data['accel']['z']:.2f}")
+    except Exception as e:
+        click.echo(f"An error occurred: {str(e)}")
+    finally:
+        hal.close()
+
+@cli.command()
+@click.argument("ip", default=DEFAULT_IP)
+def enable_movement(ip: str) -> None:
+    """Enable movement for all servos."""
+    hal = HAL(ip)
+    try:
+        hal.servo.enable_movement()
+        click.echo("Movement enabled for all servos")
+    except Exception as e:
+        click.echo(f"An error occurred: {str(e)}")
+    finally:
+        hal.close()
+
+@cli.command()
+@click.argument("ip", default=DEFAULT_IP)
+def disable_movement(ip: str) -> None:
+    """Disable movement for all servos."""
+    hal = HAL(ip)
+    try:
+        hal.servo.disable_movement()
+        click.echo("Movement disabled for all servos")
     except Exception as e:
         click.echo(f"An error occurred: {str(e)}")
     finally:
